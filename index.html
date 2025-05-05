@@ -91,6 +91,7 @@
 
   <button onclick="generateJSON()">Generate JSON</button>
   <button onclick="downloadJSON()">Download JSON</button>
+<button onclick="importJson()">Import JSON</button>
 
   <h3>Generated JSON:</h3>
   <textarea id="jsonOutput" readonly></textarea>
@@ -127,7 +128,7 @@
       "item_toilet_paper_roll_empty","item_treestick","item_tripwire_explosive","item_trophy","item_turkey_leg",
       "item_turkey_whole","item_umbrella","item_umbrella_clover","item_unidentified","item_upsidedown_loot",
       "item_uranium_chunk_l","item_uranium_chunk_m","item_uranium_chunk_s","item_whoopie","item_zipline_gun",
-      "item_rpg_easter","item_rpg_ammo_egg","item_revolver_gold","item_cardboard_box","item_sticker_dispenser","item_stash_grenade"
+      "item_rpg_easter","item_rpg_ammo_egg","item_revolver_gold"
     ];
 
     function toggleMode() {
@@ -244,6 +245,41 @@
       link.click();
       document.body.removeChild(link);
     }
+
+function importJson() {
+  const input = document.getElementById('importJsonInput');
+  if (!input.files.length) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const jsonData = JSON.parse(e.target.result);
+      populateFormFromJson(jsonData);
+    } catch (err) {
+      alert("Invalid JSON file.");
+    }
+  };
+  reader.readAsText(input.files[0]);
+}
+
+function populateFormFromJson(data) {
+  // Example for basic slot data like back, leftHand, etc.
+  const slots = ['back', 'leftHand', 'rightHand', 'leftHip', 'rightHip'];
+  slots.forEach(slot => {
+    const slotData = data[slot];
+    if (slotData) {
+      document.getElementById(`${slot}-itemID`).value = slotData.itemID || 'None';
+      document.getElementById(`${slot}-ammo`).value = slotData.ammo || 0;
+      document.getElementById(`${slot}-state`).value = slotData.state || 0;
+      document.getElementById(`${slot}-scale`).value = slotData.scaleModifier || 1;
+      document.getElementById(`${slot}-hue`).value = slotData.hue || 0;
+      document.getElementById(`${slot}-saturation`).value = slotData.saturation || 0;
+
+      // If children are present, you can extend this part to dynamically create them.
+      // e.g., loop through slotData.children and addChildUI(slot, childData);
+    }
+  });
+}
 
     window.onload = () => {
       const container = document.getElementById('slotEditors');
