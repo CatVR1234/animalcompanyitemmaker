@@ -95,7 +95,36 @@
   <h3>Generated JSON:</h3>
   <textarea id="jsonOutput" readonly></textarea>
 
-  <script>
+  <script> 
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("copy-child-button")) {
+        const originalChild = e.target.closest(".child-block");
+        if (!originalChild) return;
+
+        const clone = originalChild.cloneNode(true);
+        // Reset any event handlers (like delete/copy buttons)
+        setupChildButtons(clone);
+        originalChild.parentElement.appendChild(clone);
+    }
+});
+
+function setupChildButtons(childElement) {
+    const deleteBtn = childElement.querySelector(".delete-child-button");
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", function () {
+            childElement.remove();
+        });
+    }
+
+    const copyBtn = childElement.querySelector(".copy-child-button");
+    if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+            const newClone = childElement.cloneNode(true);
+            setupChildButtons(newClone);
+            childElement.parentElement.appendChild(newClone);
+        });
+    }
+}
     const slots = ["back", "leftHand", "rightHand", "leftHip", "rightHip"];
     const itemIDs = [
       "None",
@@ -173,6 +202,7 @@
         <div class="children-container"></div>
         <button onclick="addChildItem(this)">Add Child</button>
         <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
+<button type="button" class="copy-child-button">Copy</button>
       `;
       attachColorPreviewListeners(child);
       container.appendChild(child);
