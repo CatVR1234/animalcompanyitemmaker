@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-  <title>Animal Company Item Maker By Richard</title>
-  <style>
+<title>Animal Company Item Maker By Richard</title>
+<style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 20px;
@@ -84,18 +85,14 @@
   </style>
 </head>
 <body>
-  <button id="modeToggle" onclick="toggleMode()">Toggle Light/Dark</button>
-  <h1>Animal Company Item Maker By Richard</h1>
-
-  <div id="slotEditors"></div>
-
-  <button onclick="generateJSON()">Generate JSON</button>
-  <button onclick="downloadJSON()">Download JSON</button>
-
-  <h3>Generated JSON:</h3>
-  <textarea id="jsonOutput" readonly></textarea>
-
-  <script> 
+<button id="modeToggle" onclick="toggleMode()">Toggle Light/Dark</button>
+<h1>Animal Company Item Maker By Richard</h1>
+<div id="slotEditors"></div>
+<button onclick="generateJSON()">Generate JSON</button>
+<button onclick="downloadJSON()">Download JSON</button>
+<h3>Generated JSON:</h3>
+<textarea id="jsonOutput" readonly=""></textarea>
+<script> 
 document.addEventListener("click", function (e) {
     if (e.target.classList.contains("copy-child-button")) {
         const originalChild = e.target.closest(".child-block");
@@ -156,7 +153,7 @@ function setupChildButtons(childElement) {
       "item_toilet_paper_roll_empty","item_treestick","item_tripwire_explosive","item_trophy","item_turkey_leg",
       "item_turkey_whole","item_umbrella","item_umbrella_clover","item_unidentified","item_upsidedown_loot",
       "item_uranium_chunk_l","item_uranium_chunk_m","item_uranium_chunk_s","item_whoopie","item_zipline_gun",
-      "item_rpg_easter","item_rpg_ammo_egg","item_revolver_gold","item_pinata_bat","item_boombox_neon","item_anti_gravity_grenade"
+      "item_rpg_easter","item_rpg_ammo_egg","item_revolver_gold","item_pinata_bat","item_neon_boombox","item_anti_gravity_grenade","item_moon_car"
     ];
 
     function toggleMode() {
@@ -253,17 +250,19 @@ function setupChildButtons(childElement) {
       return item;
     }
 
-    function generateJSON() {
-      const result = {};
-      for (const slot of slots) {
-        const editor = document.getElementById(`editor-${slot}`);
-        const data = getItemData(editor);
-        if (data) result[slot] = data;
-      }
-      document.getElementById('jsonOutput').value = JSON.stringify(result, null, 2);
-    }
+    
+function generateJSON() {
+  const result = { version: 1 };
+  for (const slot of slots) {
+    const editor = document.getElementById(`editor-${slot}`);
+    const data = getItemData(editor);
+    result[slot] = data || {};
+  }
+  document.getElementById('jsonOutput').value = JSON.stringify(result, null, 2);
+}
 
-    function downloadJSON() {
+
+function downloadJSON() {
       const json = document.getElementById('jsonOutput').value;
       if (!json) return alert("Generate JSON first.");
       const blob = new Blob([json], { type: "application/json" });
